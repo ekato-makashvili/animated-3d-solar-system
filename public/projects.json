@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "title": "Zvirti E-commerce",
+    "slug": "zvirti-ecommerce",
+    "short_description": "E-commerce site for Zvirti brand using Vue.js and Laravel.",
+    "cover_image": "/media/zvirti-cover.jpg",
+    "content": "<p>Built and maintain Zvirti's online store with modern features, responsive design, and Stripe integration.</p>",
+    "tech_stack": ["Vue.js", "Laravel", "Tailwind", "Stripe"],
+    "demo_url": "#",
+    "repo_url": "#"
+  }
+]
