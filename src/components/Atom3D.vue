@@ -36,8 +36,9 @@ onMounted(() => {
   scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0x0b0c1c, 0.002)
 
-  camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 3000)
-  camera.position.set(0, 60, 220)
+camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 3000)
+camera.position.set(0, 100, 400) // move camera further back
+
 
   // Lights
   scene.add(new THREE.AmbientLight(0xffffff, 0.4))
@@ -274,13 +275,13 @@ for (let i = 0; i < spotsCount; i++) {
   controls.minDistance = 80
   controls.maxDistance = 600
 
-  const onResize = () => {
-    camera.aspect = container.clientWidth / container.clientHeight
-    camera.updateProjectionMatrix()
-    renderer.setSize(container.clientWidth, container.clientHeight)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
-  }
-  window.addEventListener('resize',onResize)
+const onResize = () => {
+  camera.aspect = container.clientWidth / container.clientHeight
+  camera.updateProjectionMatrix()
+  renderer.setSize(container.clientWidth, container.clientHeight)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
+}
+window.addEventListener('resize',onResize)
 
   const clock = new THREE.Clock()
   const animate = ()=>{
