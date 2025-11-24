@@ -24,21 +24,18 @@
           :src="activePlanet.image"
           :alt="activePlanet.name"
         />
-        <div class="overlay-text">
-          <h2>{{ activePlanet.name }}</h2>
-          <ul>
-            <li v-if="activePlanet.diameter">
-              Diameter: {{ activePlanet.diameter }} km
-            </li>
-            <li v-if="activePlanet.distance">
-              Distance from Sun: {{ activePlanet.distance }} million km
-            </li>
-            <li v-if="activePlanet.temp !== undefined">
-              Average Temperature: {{ activePlanet.temp }} °C
-            </li>
-          </ul>
-          <button @click="closeOverlay">Close</button>
-        </div>
+<div class="overlay-text">
+  <h2>{{ activePlanet.name }}</h2>
+  <ul>
+    <li v-if="activePlanet.diameter"><strong>Diameter: </strong>{{ activePlanet.diameter }} km</li>
+    <li v-if="activePlanet.distance"><strong>Distance from Sun: </strong>{{ activePlanet.distance }} million km</li>
+    <li v-if="activePlanet.temp !== undefined"><strong>Temperature: ≈ </strong>{{ activePlanet.temp }} °C</li>
+    <li v-if="activePlanet.travelTime"><strong>Travel time from Earth:</strong> {{ activePlanet.travelTime }}</li>
+    <li v-if="activePlanet.recommendedRocket"><strong>Rocket:</strong> {{ activePlanet.recommendedRocket }}</li>
+  </ul>
+  <button @click="closeOverlay">Close</button>
+</div>
+
       </div>
     </div>
   </div>
@@ -62,8 +59,9 @@ const planetsData = [
     diameter: 4880,
     distance: 57.9,
     temp: 167,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/4/4a/Mercury_in_true_color.jpg",
+    travelTime: "≈ 6–7 years",
+    recommendedRocket: "Atlas / Falcon Heavy"
   },
   {
     name: "Venus",
@@ -74,8 +72,9 @@ const planetsData = [
     diameter: 12104,
     distance: 108.2,
     temp: 464,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg",
+    travelTime: "≈ 4–5 months",
+    recommendedRocket: "Falcon Heavy"
   },
   {
     name: "Earth",
@@ -86,8 +85,9 @@ const planetsData = [
     diameter: 12742,
     distance: 149.6,
     temp: 15,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/9/97/The_Earth_seen_from_Apollo_17.jpg",
+    travelTime: "—",
+    recommendedRocket: "—"
   },
   {
     name: "Mars",
@@ -98,8 +98,9 @@ const planetsData = [
     diameter: 6779,
     distance: 227.9,
     temp: -65,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg",
+    travelTime: "≈ 6–9 months",
+    recommendedRocket: "Falcon Heavy / Starship"
   },
   {
     name: "Jupiter",
@@ -111,6 +112,8 @@ const planetsData = [
     distance: 778.5,
     temp: -110,
     image: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg",
+    travelTime: "≈ 5–6 years",
+    recommendedRocket: "Atlas V / Heavy-lift"
   },
   {
     name: "Saturn",
@@ -121,8 +124,9 @@ const planetsData = [
     diameter: 116460,
     distance: 1434,
     temp: -140,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/c/c7/Saturn_during_Equinox.jpg",
+    travelTime: "≈ 6–7 years",
+    recommendedRocket: "Heavy-lift"
   },
   {
     name: "Uranus",
@@ -134,6 +138,8 @@ const planetsData = [
     distance: 2871,
     temp: -195,
     image: "https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg",
+    travelTime: "≈ 8–9 years",
+    recommendedRocket: "Heavy probe launch"
   },
   {
     name: "Neptune",
@@ -144,21 +150,26 @@ const planetsData = [
     diameter: 49244,
     distance: 4495,
     temp: -200,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg",
+    image: "https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg",
+    travelTime: "≈ 12 years",
+    recommendedRocket: "Heavy probe launch"
   },
   {
     name: "Sun",
-    color: 0xffcc33,
+    color: 0xff6a00,
     size: 30,
     orbitRadius: 0,
     speed: 0.005,
     diameter: 1391016,
     distance: 0,
     temp: 5505,
-    image: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Solar_sys8.jpg",
-  },
+    image: "https://res.cloudinary.com/dmr48sbbr/image/upload/v1763982055/SUN_wnksto.jpg",
+    travelTime: "",
+    recommendedRocket: ""
+  }
 ];
+
+
 
 let scene, camera, renderer, controls, frameId;
 const planets = [];
@@ -175,7 +186,6 @@ onMounted(() => {
   container.appendChild(renderer.domElement);
 
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x0b0c1c, 0.0015);
 
   // Camera – მოასწორეთ ასე, რომ ყველა პლანეტა ჩანდეს
   camera = new THREE.PerspectiveCamera(
@@ -188,7 +198,7 @@ onMounted(() => {
   camera.lookAt(0, 0, 0);
 
   // Lights
-  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+scene.add(new THREE.AmbientLight(0xffffff, 0.8));
   const sunLight = new THREE.PointLight(0xffffff, 2.5, 3000);
   sunLight.position.set(0, 0, 0);
   scene.add(sunLight);
@@ -228,9 +238,12 @@ onMounted(() => {
           })
         : new THREE.MeshStandardMaterial({
             color: data.color,
-            roughness: 0.3,
-            metalness: 0.1,
+            roughness: 0.2,
+            metalness: 0.0,
+            emissive: new THREE.Color(data.color),
+            emissiveIntensity: 0.25, // <= 0.2–0.5 კარგი დიაპაზონია
           });
+
     const mesh = new THREE.Mesh(geo, mat);
     const angle = Math.random() * Math.PI * 2;
     const yOffset = (Math.random() - 0.5) * 3;
@@ -339,29 +352,10 @@ onMounted(() => {
 function focusPlanet(name) {
   const planet = planets.find((p) => p.name === name);
   if (!planet) return;
-  activePlanet.value = {
-    name: planet.name,
-    diameter: planet.diameter,
-    distance: planet.distance,
-    temp: planet.temp,
-    image: planet.image,
-  };
 
-  const targetPos = new THREE.Vector3();
-  planet.mesh.getWorldPosition(targetPos);
-  const start = camera.position.clone();
-  const end = targetPos.clone().add(new THREE.Vector3(0, 10, 20));
-  let progress = 0;
-  function moveCamera() {
-    if (progress < 1) {
-      progress += 0.02;
-      camera.position.lerpVectors(start, end, progress);
-      camera.lookAt(targetPos);
-      requestAnimationFrame(moveCamera);
-    }
-  }
-  moveCamera();
+  activePlanet.value = planet;
 }
+
 
 function closeOverlay() {
   activePlanet.value = null;
